@@ -11778,45 +11778,6 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<h1 id="Table-of-Contents">Table of Contents<a class="anchor-link" href="#Table-of-Contents">&#182;</a></h1><ul>
-<li><a href="#Intro">Intro</a><ul>
-<li><a href="#Map-Area">Map Area</a></li>
-</ul>
-</li>
-<li><a href="#Problems-Encountered-in-the-Map">Problems Encountered in the Map</a><ul>
-<li><a href="#Fixing-Street-Names">Fixing Street Names</a><ul>
-<li><a href="#Abbreviations">Abbreviations</a></li>
-<li><a href="#Numbers-After-Street-Names">Numbers After Street Names</a></li>
-</ul>
-</li>
-<li><a href="#Fixing-postal-codes">Fixing postal codes</a></li>
-</ul>
-</li>
-<li><a href="#Overview-of-the-data">Overview of the data</a><ul>
-<li><a href="#FIle-sizes">FIle sizes</a></li>
-<li><a href="#Overview-Statistics">Overview Statistics</a><ul>
-<li><a href="#Number-of-unique-users">Number of unique users</a></li>
-<li><a href="#Number-of-Nodes-and-Ways">Number of Nodes and Ways</a></li>
-<li><a href="#Number-of-chosen-type-of-nodes">Number of chosen type of nodes</a></li>
-<li><a href="#Additional-statistics">Additional statistics</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#Other-ideas-about-the-dataset">Other ideas about the dataset</a><ul>
-<li><a href="#Ideas-for-additional-improvements,-their-benefits-or-problems">Ideas for additional improvements, their benefits or problems</a></li>
-</ul>
-</li>
-</ul>
-
-</div>
-</div>
-</div>
-<div class="cell border-box-sizing text_cell rendered">
-<div class="prompt input_prompt">
-</div>
-<div class="inner_cell">
-<div class="text_cell_render border-box-sizing rendered_html">
 <h1 id="Intro">Intro<a class="anchor-link" href="#Intro">&#182;</a></h1>
 </div>
 </div>
@@ -11835,10 +11796,7 @@ div#notebook {
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Las Vegas (NV), United States</p>
-<ul>
-<li><a href="https://www.openstreetmap.org/relation/170117">https://www.openstreetmap.org/relation/170117</a></li>
-</ul>
+<p>Las Vegas (NV), United States  -  <a href="https://www.openstreetmap.org/relation/170117">https://www.openstreetmap.org/relation/170117</a></p>
 <p>I will be performing data wrangling on Las Vegas OpenStreetMap data. I chose this specific region because it is my current home city and I am interested in cleaning and improving the data for it.</p>
 
 </div>
@@ -11865,12 +11823,13 @@ div#notebook {
 <li>Street names containing unit/suite number which is supposed to be in <code>note</code> tag not in <code>addr:street</code> (<em>Howard Hughes Pkwy #790</em>)</li>
 <li>Several postal codes are in the wrong format. They start with state abbreviation NV instead of just being a number (<em>NV 89117 should be just 89117</em>) </li>
 <li><p>Way nodes have data uploaded from <strong>Topologically Integrated Geographic Encoding and Referencing system (TIGER)</strong> :</p>
-<p><code>&lt;tag k="tiger:name_base" v="Sleek"/&gt;</code></p>
+
+<pre><code>   &lt;tag k="tiger:name_base" v="Sleek"/&gt;</code></pre>
 <p>According to the <a href="http://wiki.openstreetmap.org/wiki/TIGER">OpenStreetMap documentation</a>:</p>
-<blockquote><p>It is unlikely that the TIGER data ever will be imported again. Enough editing has occurred since the original upload of the TIGER 2005 data (which was not uploaded until 2007) that it will be difficult to determine if differences between future TIGER and OSM are because of good corrections made by OSM editors or from bad TIGER data. With the US mapping community growing strongly now, it isn't as much of a concern. Do not worry about getting your work overwritten by new TIGER data. Go map!</p>
-</blockquote>
 </li>
 </ul>
+<blockquote><p>"It is unlikely that the TIGER data ever will be imported again. Enough editing has occurred since the original upload of the TIGER 2005 data (which was not uploaded until 2007) that it will be difficult to determine if differences between future TIGER and OSM are because of good corrections made by OSM editors or from bad TIGER data. With the US mapping community growing strongly now, it isn't as much of a concern. Do not worry about getting your work overwritten by new TIGER data. Go map!"</p>
+</blockquote>
 <p>Before converting the data from osm to csv and loading it to the database I will perform some data cleaning and organization.</p>
 
 </div>
@@ -11920,11 +11879,13 @@ div#notebook {
 <p>To replace abbreviated street names I used the function and mapping below. In the result of this function a name like 
 <em>"3547 S Maryland Pkwy"</em> will be converted to <em>"3547 South Maryland Parkway"</em></p>
 
-<pre><code>mapping = { "St": "Street", "St.": "Street", "Ave": "Avenue", "AVE": "Avenue", "Ave.": "Avenue", "ave": "Avenue", 
-            "Blvd": "Boulevard", "Blvd.": "Boulevard", "blvd": "Boulevard", "blvd.": "Boulevard", "Rd": "Road",
-            "Rd.": "Road", "Rd5": "Road", "Dr" : "Drive", "Dr." : "Drive", "Pkwy" : "Parkway", "Cir" : "Circle",
-            "Ln" : "Lane", "Ln." : "Lane","S": "South","S.": "South", "N": "North", "N.": "North", "W": "West",
-            "W.": "West", "E": "East","E.": "East"}
+<pre><code>mapping = { "St": "Street", "St.": "Street", "Ave": "Avenue", "AVE": "Avenue",
+            "Ave.": "Avenue", "ave": "Avenue",  "Blvd": "Boulevard", 
+            "Blvd.": "Boulevard", "blvd": "Boulevard", "blvd.": "Boulevard",
+            "Rd": "Road", "Rd.": "Road", "Rd5": "Road", "Dr" : "Drive", 
+            "Dr." : "Drive", "Pkwy" : "Parkway", "Cir" : "Circle", "Ln" : "Lane", 
+            "Ln." : "Lane","S": "South","S.": "South", "N": "North", "N.": "North", 
+            "W": "West", "W.": "West", "E": "East","E.": "East"}
 
 def update_name(name, mapping):
     new_name = []
@@ -12215,7 +12176,7 @@ from ways</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>Upon further investigation of top used key/value pairs in nodes_tags I found out that <code>state/'state name'</code> pair is presented more than once. It will be right to think that the dataset should only have 1 such pair rnamely <strong>state/NV</strong>. However, below is result and the  the query that show all the state values present and their count</p>
+<h3 id="Additional-data-cleaning-ideas">Additional data cleaning ideas<a class="anchor-link" href="#Additional-data-cleaning-ideas">&#182;</a></h3><p>Upon further investigation of top used key/value pairs in nodes_tags I found out that <code>state/'state name'</code> pair is presented more than once. It will be right to think that the dataset should only have 1 such pair rnamely <strong>state/NV</strong>. However, below is result and the  the query that show all the state values present and their count</p>
 
 <pre><code>select key, value, count(*) num 
 from nodes_tags
@@ -12263,7 +12224,7 @@ where key='state'</code></pre>
 </div>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
-<p>We see that there are 4 nodes with state 'Nevada' as opposed to 491 nodes with state 'NV' which makes me come to the conclusion that the <code>NV</code> is the default format for the state. Moreover, there are 40 nodes with state 'AZ, which seems very odd to me since we are looking at the data for the city in Nevada not Arizona.</p>
+<p>We see that there are 4 nodes with state 'Nevada' as opposed to 491 nodes with state 'NV' which makes me come to the conclusion that the <code>NV</code> is the default format for the state. Moreover, there are 40 nodes with state 'AZ', which seems very odd to me since we are looking at the data for the city in Nevada not Arizona.</p>
 <p>If converting <code>state/Nevada</code> to <code>state/NV</code> seems pretty much obvious in benefiting the data cleaning and uniformity, then <code>state/AZ</code> may cause a problem and needs further investigation.</p>
 <p>In the query below I select all names for the nodes that have state 'AZ' to see what map point they represent.</p>
 
@@ -12283,6 +12244,18 @@ order by n.id desc</code></pre>
 <div class="inner_cell">
 <div class="text_cell_render border-box-sizing rendered_html">
 <p>As a result of this query I got all the names for map points with 'AZ' as a state. The names share something in common: almost all of them are either 'Bay', 'Cove' or 'Mine', natural points in other words. However, there is one exception: one point is an airport (Temple Bar Airport). As one possible explanation for nature points: these map points may be on the border of NV and AZ states. But can an airport be on the border of 2 states?</p>
+
+</div>
+</div>
+</div>
+<div class="cell border-box-sizing text_cell rendered">
+<div class="prompt input_prompt">
+</div>
+<div class="inner_cell">
+<div class="text_cell_render border-box-sizing rendered_html">
+<h3 id="Additional-data-improving-ideas">Additional data improving ideas<a class="anchor-link" href="#Additional-data-improving-ideas">&#182;</a></h3><p>Smartphone app can be used as an additional tool for improving and gathering data. For example, a game can be created where person is asked to confirm or deny the location of specific map point around him or her, confirm the address or any description (like cuisine of a restaurant etc). In exchange the user gets some kind of points with which he can gather ranks in game.</p>
+<p>The benefit of this idea is that more people will contribute to the map data more often, which potentially will make the map data more correct.</p>
+<p>However, there may be problems: users can submit incorrect data, or if the game becomes very popular and competitive users can just start clicking through without thinking just for the points.</p>
 
 </div>
 </div>
